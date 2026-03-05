@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Link2, Search, List, Brain, FlaskConical, Calendar,
   BookOpen, Target, ClipboardList, Briefcase, FileCheck, BarChart3,
-  Cpu, Server, Settings, TrendingUp,
+  Cpu, Server, Settings, TrendingUp, Bell,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -45,6 +45,7 @@ const navGroups = [
     items: [
       { title: "RL Research", url: "/research/rl", icon: Cpu },
       { title: "Providers", url: "/providers", icon: Server },
+      { title: "Alerts", url: "/alerts", icon: Bell },
       { title: "Settings", url: "/settings", icon: Settings },
     ],
   },

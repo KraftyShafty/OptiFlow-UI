@@ -97,7 +97,14 @@ const ResearchPage = () => {
       ) : (
         <div className="space-y-3">
           {sorted.map((nb: ResearchNotebookRecord) => (
-            <Panel key={nb.id} ariaLabel={`Notebook ${nb.symbol}`}>
+            <Panel
+              key={nb.id}
+              ariaLabel={`Notebook ${nb.symbol}`}
+              onClick={() => {
+                if (nb.current_brief) navigate(`/research/notebooks/${nb.id}/briefs/${nb.current_brief.id}`);
+              }}
+              className={nb.current_brief ? "cursor-pointer hover:border-primary/40 transition-colors" : ""}
+            >
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">

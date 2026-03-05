@@ -361,18 +361,18 @@ const SettingsPage = () => {
             {costChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={costChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 18%)" />
-                  <XAxis dataKey="date" tick={{ fill: "hsl(215 15% 50%)", fontSize: 11 }} />
-                  <YAxis tick={{ fill: "hsl(215 15% 50%)", fontSize: 11 }} tickFormatter={(v) => `$${v}`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="date" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
+                  <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} tickFormatter={(v) => `$${v}`} />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(214 40% 9%)",
-                      border: "1px solid hsl(214 20% 18%)",
+                      background: "var(--card)",
+                      border: "1px solid var(--border)",
                       borderRadius: "12px",
                       fontSize: 12,
                     }}
                   />
-                  <Bar dataKey="cost" fill="hsl(25 95% 53%)" radius={[4, 4, 0, 0]} name="Cost (USD)" />
+                  <Bar dataKey="cost" fill="var(--primary)" radius={[4, 4, 0, 0]} name="Cost (USD)" />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -424,7 +424,7 @@ const SettingsPage = () => {
                   >
                     <div className="flex items-center gap-3">
                       <StatusIndicator
-                        status={d.healthy ? "healthy" : "error"}
+                        status={d.healthy ? "healthy" : "down"}
                         label={d.provider}
                       />
                     </div>

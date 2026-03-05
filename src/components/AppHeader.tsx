@@ -19,6 +19,7 @@ const routeLabels: Record<string, string> = {
   "/backtest": "Backtest",
   "/research/rl": "RL Research",
   "/providers": "Providers",
+  "/alerts": "Alerts",
   "/settings": "Settings",
 };
 

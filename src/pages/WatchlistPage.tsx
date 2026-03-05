@@ -72,7 +72,7 @@ const WatchlistPage = () => {
   });
 
   const refreshWl = useMutation({
-    mutationFn: (wlId: string) => api.refreshWatchlist(wlId),
+    mutationFn: (wlId: string) => api.refreshStrategyWatchlist(wlId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["watchlists"] });
       toast.success("Watchlist refreshed");

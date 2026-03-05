@@ -133,7 +133,7 @@ const RLResearchPage = () => {
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium text-foreground">{ds.name}</span>
                     <StatusIndicator
-                      status={ds.status === "completed" ? "healthy" : ds.status === "failed" ? "degraded" : "checking"}
+                      status={ds.status === "completed" ? "healthy" : ds.status === "failed" ? "down" : "degraded"}
                       label={ds.status}
                     />
                   </div>

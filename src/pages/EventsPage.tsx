@@ -43,9 +43,9 @@ const EventsPage = () => {
   });
 
   const statusMap: Record<string, "active" | "completed" | "failed"> = {
-    upcoming: "active",
-    live: "active",
-    settled: "completed",
+    scheduled: "active",
+    active: "active",
+    completed: "completed",
     cancelled: "failed",
   };
 
@@ -80,9 +80,9 @@ const EventsPage = () => {
                   <span className="rounded-full bg-secondary/50 border border-border px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
                     {evt.scope_type}
                   </span>
-                  {brief?.expected_move_profile?.expected_move_pct != null && (
+                  {brief?.expected_move_profile?.implied_move_pct != null && (
                     <MonoValue
-                      value={`±${(brief.expected_move_profile.expected_move_pct * 100).toFixed(1)}%`}
+                      value={`±${(brief.expected_move_profile.implied_move_pct * 100).toFixed(1)}%`}
                       className="text-xs text-accent"
                     />
                   )}
@@ -109,6 +109,16 @@ const EventsPage = () => {
                   >
                     Refresh Brief
                   </Button>
+                  {brief && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => navigate(`/events/${evt.id}/briefs/${brief.id}`)}
+                    >
+                      View Brief
+                    </Button>
+                  )}
                 </div>
               </Panel>
             );

@@ -140,29 +140,29 @@ const BacktestRunDetailPage = () => {
             ) : (
               <ResponsiveContainer width="100%" height={320}>
                 <LineChart data={equity_curve}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 18%)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
                     dataKey="as_of_utc"
-                    tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }}
+                    tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     tickFormatter={(v: string) =>
                       new Date(v).toLocaleDateString("en-US", { month: "short", day: "numeric" })
                     }
                   />
                   <YAxis
-                    tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }}
+                    tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
                   />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(214 40% 9%)",
-                      border: "1px solid hsl(214 20% 18%)",
+                      background: "var(--card)",
+                      border: "1px solid var(--border)",
                       borderRadius: "12px",
                       fontSize: 12,
                     }}
                     labelFormatter={(v: string) => new Date(v).toLocaleDateString()}
                     formatter={(v: number) => [`$${v.toLocaleString()}`, "Equity"]}
                   />
-                  <Line type="monotone" dataKey="equity" stroke="hsl(187 80% 69%)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="equity" stroke="var(--primary)" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -177,27 +177,27 @@ const BacktestRunDetailPage = () => {
             ) : (
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={drawdownData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 18%)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
                     dataKey="as_of_utc"
-                    tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }}
+                    tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     tickFormatter={(v: string) =>
                       new Date(v).toLocaleDateString("en-US", { month: "short", day: "numeric" })
                     }
                   />
                   <YAxis
-                    tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }}
+                    tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     tickFormatter={(v: number) => `${v.toFixed(1)}%`}
                   />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(214 40% 9%)",
-                      border: "1px solid hsl(214 20% 18%)",
+                      background: "var(--card)",
+                      border: "1px solid var(--border)",
                       borderRadius: "12px",
                       fontSize: 12,
                     }}
                   />
-                  <Area type="monotone" dataKey="dd" stroke="hsl(0 72% 60%)" fill="hsl(0 72% 60% / 0.15)" strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="dd" stroke="var(--destructive)" fill="hsl(0 72% 60% / 0.15)" strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
@@ -215,20 +215,20 @@ const BacktestRunDetailPage = () => {
                 <h3 className="section-subtitle mb-2">PnL Distribution</h3>
                 <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={trades}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 18%)" />
-                    <XAxis dataKey="symbol" tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }} />
-                    <YAxis tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }} tickFormatter={(v: number) => `$${v}`} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="symbol" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} />
+                    <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickFormatter={(v: number) => `$${v}`} />
                     <Tooltip
                       contentStyle={{
-                        background: "hsl(214 40% 9%)",
-                        border: "1px solid hsl(214 20% 18%)",
+                        background: "var(--card)",
+                        border: "1px solid var(--border)",
                         borderRadius: "12px",
                         fontSize: 12,
                       }}
                     />
                     <Bar dataKey="pnl">
                       {trades.map((t, i) => (
-                        <Cell key={i} fill={t.pnl >= 0 ? "hsl(152 69% 45%)" : "hsl(0 72% 51%)"} />
+                        <Cell key={i} fill={t.pnl >= 0 ? "var(--success)" : "var(--destructive)"} />
                       ))}
                     </Bar>
                   </BarChart>

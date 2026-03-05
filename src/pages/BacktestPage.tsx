@@ -133,7 +133,7 @@ const BacktestPage = () => {
               >
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-mono text-foreground">
-                    {bt.config.strategy_name?.replace(/_/g, " ") ?? "Backtest"}
+                    {bt.config.template_strategy?.replace(/_/g, " ") ?? "Backtest"}
                   </span>
                   <StatusPill
                     status={
@@ -145,17 +145,17 @@ const BacktestPage = () => {
                     }
                   />
                   <span className="text-xs text-muted-foreground">
-                    {bt.config.symbols?.join(", ")}
+                    {bt.config.symbol_universe?.join(", ")}
                   </span>
                   <FreshnessBadge timestamp={bt.created_at} />
                 </div>
                 <div className="flex items-center gap-4">
-                  {bt.metrics.sharpe_ratio != null && (
-                    <MonoValue value={`SR ${bt.metrics.sharpe_ratio.toFixed(2)}`} className="text-xs" />
+                  {bt.metrics.sharpe != null && (
+                    <MonoValue value={`SR ${bt.metrics.sharpe.toFixed(2)}`} className="text-xs" />
                   )}
-                  {bt.metrics.max_drawdown_pct != null && (
+                  {bt.metrics.max_drawdown != null && (
                     <MonoValue
-                      value={`DD ${(bt.metrics.max_drawdown_pct * 100).toFixed(1)}%`}
+                      value={`DD ${(bt.metrics.max_drawdown * 100).toFixed(1)}%`}
                       negative
                       className="text-xs"
                     />
@@ -163,11 +163,11 @@ const BacktestPage = () => {
                   {bt.metrics.win_rate != null && (
                     <MonoValue value={`WR ${(bt.metrics.win_rate * 100).toFixed(0)}%`} className="text-xs" />
                   )}
-                  {bt.metrics.total_pnl != null && (
+                  {bt.metrics.total_return != null && (
                     <MonoValue
-                      value={`$${bt.metrics.total_pnl.toFixed(0)}`}
-                      positive={bt.metrics.total_pnl > 0}
-                      negative={bt.metrics.total_pnl < 0}
+                      value={`${(bt.metrics.total_return * 100).toFixed(1)}%`}
+                      positive={bt.metrics.total_return > 0}
+                      negative={bt.metrics.total_return < 0}
                       className="text-xs font-bold"
                     />
                   )}

@@ -7,25 +7,18 @@ import { useQuery } from "@tanstack/react-query";
 import {
   api,
   type ProviderHealthRecord,
-  type DriftBreach,
-  type BackgroundJob,
+  type ProviderDriftMetricRecord,
+  type BackgroundJobStatusRecord,
 } from "@/lib/api";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 function statusFromRecord(
   r: ProviderHealthRecord,
-): "healthy" | "degraded" | "error" | "offline" {
-  if (!r.enabled) return "offline";
-  if (!r.configured) return "error";
+): "healthy" | "degraded" | "down" {
+  if (!r.enabled) return "down";
+  if (!r.configured) return "down";
   return r.healthy ? "healthy" : "degraded";
 }
 
@@ -55,10 +48,13 @@ const ProvidersPage = () => {
     refetchInterval: 30_000,
   });
 
+  const [driftSymbol, setDriftSymbol] = useState("SPY");
+
   const { data: driftData } = useQuery({
-    queryKey: ["provider-drift"],
-    queryFn: () => api.getProviderDrift(),
+    queryKey: ["provider-drift", driftSymbol],
+    queryFn: () => api.getProviderDrift(driftSymbol),
     refetchInterval: 30_000,
+    enabled: !!driftSymbol,
   });
 
   const { data: jobsData } = useQuery({
@@ -73,9 +69,8 @@ const ProvidersPage = () => {
   const providers = healthData.providers;
   const healthyCount = providers.filter((p) => p.healthy && p.enabled).length;
 
-  const breaches: DriftBreach[] = driftData?.breaches ?? [];
-  const driftTrend = driftData?.trend ?? [];
-  const jobs: BackgroundJob[] = jobsData?.jobs ?? [];
+  const breaches: ProviderDriftMetricRecord[] = driftData?.metrics ?? [];
+  const jobs: BackgroundJobStatusRecord[] = jobsData?.jobs ?? [];
 
   return (
     <div className="space-y-6">
@@ -94,10 +89,6 @@ const ProvidersPage = () => {
                 <StatusIndicator status={status} label={status} />
               </div>
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="micro-label">Latency</span>
-                  <MonoValue value={p.latency_ms != null ? `${p.latency_ms}ms` : "—"} className="text-xs" />
-                </div>
                 <div className="flex justify-between">
                   <span className="micro-label">Last Check</span>
                   <span className="font-mono text-[10px] text-muted-foreground">
@@ -159,30 +150,41 @@ const ProvidersPage = () => {
       </Panel>
 
       {/* Provider Drift */}
+      <div className="flex items-center gap-3 mt-2">
+        <h2 className="section-subtitle">Provider Drift</h2>
+        <Input
+          placeholder="Symbol"
+          value={driftSymbol}
+          onChange={(e) => setDriftSymbol(e.target.value.toUpperCase())}
+          className="w-28 font-mono"
+        />
+      </div>
       <div className="grid gap-6 lg:grid-cols-2">
-        <Panel ariaLabel="Drift Trend">
-          <h2 className="section-subtitle mb-3">Drift Trending</h2>
-          {driftTrend.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={driftTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="ts" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
-                <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--card)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "12px",
-                    fontSize: 12,
-                  }}
+        <Panel ariaLabel="Drift Summary">
+          <h2 className="section-subtitle mb-3">Drift Summary</h2>
+          {driftData ? (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="micro-label">Symbol</span>
+                <MonoValue value={driftData.symbol} className="text-sm" />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="micro-label">As Of</span>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  {formatDistanceToNow(new Date(driftData.as_of_utc), { addSuffix: true })}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="micro-label">Breaches</span>
+                <MonoValue
+                  value={`${driftData.breached_count} / ${driftData.total_count}`}
+                  negative={driftData.breached_count > 0}
+                  className="text-sm"
                 />
-                <Line type="monotone" dataKey="yahoo" stroke="var(--primary)" strokeWidth={2} dot={false} name="Yahoo" />
-                <Line type="monotone" dataKey="openbb" stroke="var(--success)" strokeWidth={2} dot={false} name="OpenBB" />
-                <Line type="monotone" dataKey="polygon" stroke="var(--destructive)" strokeWidth={2} dot={false} name="Polygon" />
-              </LineChart>
-            </ResponsiveContainer>
+              </div>
+            </div>
           ) : (
-            <p className="text-sm text-muted-foreground text-center py-8">No drift trend data available</p>
+            <p className="text-sm text-muted-foreground text-center py-8">No drift data available</p>
           )}
         </Panel>
 
@@ -194,24 +196,26 @@ const ProvidersPage = () => {
                 <div
                   key={i}
                   className={`flex items-center justify-between rounded-lg border p-3 ${
-                    d.breach
+                    d.breached
                       ? "border-destructive/30 bg-destructive/5"
                       : "border-border/50 bg-secondary/20"
                   }`}
                 >
                   <div>
-                    <span className="font-mono text-sm text-foreground">{d.provider}</span>
-                    <span className="ml-2 text-xs text-muted-foreground">{d.field}</span>
+                    <span className="font-mono text-sm text-foreground">{d.metric}</span>
+                    <span className="ml-2 text-xs text-muted-foreground">{d.detail}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <MonoValue value={`${d.expected}`} className="text-xs text-muted-foreground" />
+                    <MonoValue value={`${d.yahoo_value ?? "—"}`} className="text-xs text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">→</span>
-                    <MonoValue value={`${d.actual}`} className="text-xs" />
-                    <MonoValue
-                      value={`${d.drift_pct.toFixed(1)}%`}
-                      negative={d.breach}
-                      className="text-xs"
-                    />
+                    <MonoValue value={`${d.openbb_value ?? "—"}`} className="text-xs" />
+                    {d.delta != null && (
+                      <MonoValue
+                        value={`${d.delta.toFixed(1)}%`}
+                        negative={d.breached}
+                        className="text-xs"
+                      />
+                    )}
                   </div>
                 </div>
               ))}
@@ -229,15 +233,15 @@ const ProvidersPage = () => {
           <div className="space-y-2">
             {jobs.map((job) => (
               <div
-                key={job.name}
+                key={job.job_name}
                 className="flex items-center justify-between rounded-lg border border-border/50 bg-secondary/20 p-3"
               >
-                <span className="text-sm font-mono text-foreground">{job.name}</span>
+                <span className="text-sm font-mono text-foreground">{job.job_name}</span>
                 <div className="flex items-center gap-3">
                   <StatusIndicator status={job.status === "running" ? "healthy" : "degraded"} label={job.status} />
-                  {job.last_run_at && (
+                  {job.last_finished_at && (
                     <span className="text-[10px] text-muted-foreground">
-                      {formatDistanceToNow(new Date(job.last_run_at), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(job.last_finished_at), { addSuffix: true })}
                     </span>
                   )}
                 </div>

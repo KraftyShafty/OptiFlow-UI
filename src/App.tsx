@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,31 +6,34 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppLayout } from "@/components/AppLayout";
-import DashboardPage from "./pages/DashboardPage";
-import ChainExplorerPage from "./pages/ChainExplorerPage";
-import ScannerPage from "./pages/ScannerPage";
-import WatchlistPage from "./pages/WatchlistPage";
-import AnalyzePage from "./pages/AnalyzePage";
-import StrategyLabPage from "./pages/StrategyLabPage";
-import EventsPage from "./pages/EventsPage";
-import ResearchPage from "./pages/ResearchPage";
-import ForecastsPage from "./pages/ForecastsPage";
-import JournalPage from "./pages/JournalPage";
-import PortfolioPage from "./pages/PortfolioPage";
-import ReviewPage from "./pages/ReviewPage";
-import BacktestPage from "./pages/BacktestPage";
-import RLResearchPage from "./pages/RLResearchPage";
-import ProvidersPage from "./pages/ProvidersPage";
-import SettingsPage from "./pages/SettingsPage";
-import AlertsPage from "./pages/AlertsPage";
-import FactorSnapshotPage from "./pages/FactorSnapshotPage";
-import RegimeSnapshotPage from "./pages/RegimeSnapshotPage";
-import EventBriefDetailPage from "./pages/EventBriefDetailPage";
-import ResearchBriefDetailPage from "./pages/ResearchBriefDetailPage";
-import ForecastSetDetailPage from "./pages/ForecastSetDetailPage";
-import BacktestRunDetailPage from "./pages/BacktestRunDetailPage";
-import ReviewDetailPage from "./pages/ReviewDetailPage";
-import NotFound from "./pages/NotFound";
+import { LoadingState } from "@/components/shared/LoadingState";
+
+// Lazy-loaded pages — each becomes its own chunk.
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const ChainExplorerPage = lazy(() => import("./pages/ChainExplorerPage"));
+const ScannerPage = lazy(() => import("./pages/ScannerPage"));
+const WatchlistPage = lazy(() => import("./pages/WatchlistPage"));
+const AnalyzePage = lazy(() => import("./pages/AnalyzePage"));
+const StrategyLabPage = lazy(() => import("./pages/StrategyLabPage"));
+const EventsPage = lazy(() => import("./pages/EventsPage"));
+const ResearchPage = lazy(() => import("./pages/ResearchPage"));
+const ForecastsPage = lazy(() => import("./pages/ForecastsPage"));
+const JournalPage = lazy(() => import("./pages/JournalPage"));
+const PortfolioPage = lazy(() => import("./pages/PortfolioPage"));
+const ReviewPage = lazy(() => import("./pages/ReviewPage"));
+const BacktestPage = lazy(() => import("./pages/BacktestPage"));
+const RLResearchPage = lazy(() => import("./pages/RLResearchPage"));
+const ProvidersPage = lazy(() => import("./pages/ProvidersPage"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const AlertsPage = lazy(() => import("./pages/AlertsPage"));
+const FactorSnapshotPage = lazy(() => import("./pages/FactorSnapshotPage"));
+const RegimeSnapshotPage = lazy(() => import("./pages/RegimeSnapshotPage"));
+const EventBriefDetailPage = lazy(() => import("./pages/EventBriefDetailPage"));
+const ResearchBriefDetailPage = lazy(() => import("./pages/ResearchBriefDetailPage"));
+const ForecastSetDetailPage = lazy(() => import("./pages/ForecastSetDetailPage"));
+const BacktestRunDetailPage = lazy(() => import("./pages/BacktestRunDetailPage"));
+const ReviewDetailPage = lazy(() => import("./pages/ReviewDetailPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const App = () => {
   const [queryClient] = useState(
@@ -52,6 +55,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <ErrorBoundary>
+            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><LoadingState message="Loading page…" /></div>}>
             <Routes>
             <Route element={<AppLayout />}>
               <Route path="/" element={<DashboardPage />} />
@@ -81,6 +85,7 @@ const App = () => {
             </Route>
             <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
           </ErrorBoundary>
         </BrowserRouter>
       </TooltipProvider>

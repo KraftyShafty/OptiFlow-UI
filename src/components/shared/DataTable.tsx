@@ -173,8 +173,14 @@ export function DataTable<TData, TValue>({
                 >
                   <EmptyState
                     title={emptyTitle ?? "No results"}
-                    message={emptyMessage ?? "Try adjusting your search or filters."}
-                    action={emptyAction}
+                    description={emptyMessage ?? "Try adjusting your search or filters."}
+                    action={
+                      emptyAction ? (
+                        <Button variant="outline" size="sm" onClick={emptyAction.onClick} className="rounded-full">
+                          {emptyAction.label}
+                        </Button>
+                      ) : undefined
+                    }
                     className="border-none bg-transparent"
                   />
                 </TableCell>

@@ -178,20 +178,20 @@ const ChainExplorerPage = () => {
           {termStructure && termStructure.points.length > 0 ? (
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={termStructure.points}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 18%)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis
                   dataKey="expiration"
-                  tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }}
+                  tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                   tickFormatter={(v: string) => v.slice(5)}
                 />
                 <YAxis
                   tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}
-                  tick={{ fontSize: 10, fill: "hsl(215 15% 50%)" }}
+                  tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                 />
                 <Tooltip
                   contentStyle={{
-                    background: "hsl(214 40% 9%)",
-                    border: "1px solid hsl(214 20% 18%)",
+                    background: "var(--card)",
+                    border: "1px solid var(--border)",
                     borderRadius: "12px",
                     fontSize: 12,
                   }}
@@ -200,9 +200,9 @@ const ChainExplorerPage = () => {
                 <Line
                   type="monotone"
                   dataKey="atm_iv"
-                  stroke="hsl(187 80% 69%)"
+                  stroke="var(--primary)"
                   strokeWidth={2}
-                  dot={{ fill: "hsl(187 80% 69%)", r: 4 }}
+                  dot={{ fill: "var(--primary)", r: 4 }}
                 />
               </LineChart>
             </ResponsiveContainer>

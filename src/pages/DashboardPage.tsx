@@ -76,7 +76,7 @@ const DashboardPage = () => {
           </div>
           <div>
             <p className="micro-label">Tracked Symbols</p>
-            <MonoValue value={wlItems.length} className="text-lg font-semibold" />
+            <MonoValue value={String(wlItems.length)} className="text-lg font-semibold" />
           </div>
         </Panel>
         <Panel className="flex items-center gap-3">
@@ -94,7 +94,7 @@ const DashboardPage = () => {
           </div>
           <div>
             <p className="micro-label">Active Alerts</p>
-            <MonoValue value={openAlerts.length} className="text-lg font-semibold" />
+            <MonoValue value={String(openAlerts.length)} className="text-lg font-semibold" />
           </div>
         </Panel>
         <Panel className="flex items-center gap-3">
@@ -175,7 +175,7 @@ const DashboardPage = () => {
             <div className="space-y-2">
               {providers.map((p) => (
                 <div key={p.provider} className="flex items-center justify-between">
-                  <StatusIndicator status={p.healthy ? "healthy" : "error"} label={p.provider} />
+                  <StatusIndicator status={p.healthy ? "healthy" : "down"} label={p.provider} />
                   <span className="font-mono text-[10px] text-muted-foreground truncate max-w-[100px]">
                     {p.detail}
                   </span>
@@ -245,7 +245,7 @@ const DashboardPage = () => {
                 <div key={bt.id} className="flex items-center justify-between rounded-lg border border-border/50 bg-secondary/20 p-3">
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-foreground">
-                      {bt.config.strategy_name?.replace(/_/g, " ") ?? "Backtest"}
+                      {bt.config.template_strategy?.replace(/_/g, " ") ?? "Backtest"}
                     </span>
                     <StatusPill
                       status={
@@ -254,8 +254,8 @@ const DashboardPage = () => {
                     />
                   </div>
                   <div className="flex items-center gap-3">
-                    {bt.metrics.sharpe_ratio != null && (
-                      <MonoValue value={`SR ${bt.metrics.sharpe_ratio.toFixed(2)}`} className="text-xs" />
+                    {bt.metrics.sharpe != null && (
+                      <MonoValue value={`SR ${bt.metrics.sharpe.toFixed(2)}`} className="text-xs" />
                     )}
                     {bt.metrics.win_rate != null && (
                       <MonoValue value={`${(bt.metrics.win_rate * 100).toFixed(0)}%`} className="text-xs" />
